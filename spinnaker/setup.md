@@ -140,3 +140,17 @@ hal deploy apply
 ```
 
 Now you can expose your `spin-deck` and `spin-gate` service by `kubectl edit svc`.
+
+
+## Setup Pipeline
+
+When you use GitHub webhooks as a trigger for pipelines, spinnaker have to be configured to accept webhooks.
+
+```
+TOKENFILE=~/github-token
+echo [github personal access token] > $TOKENFILE
+hal config features edit --artifacts true
+hal config artifact github enable
+hal config artifact github account add showks-github-artifact-account --token-file $TOKENFILE
+hal deploy apply
+```  
