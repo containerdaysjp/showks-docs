@@ -113,3 +113,30 @@ hal deploy apply
 By default, Spinnaker UI and API can be accessed through SSL tunnel. This time we expose it to the internet, since
 - Administrators are on the internet.
 - showKs uses GitHub as source code repository, so webhooks have to be reachable to the API.
+
+You need to integrate external authentication provider. We use GitHub organization account as OAUTH2 provider.
+
+```CLIENT_ID=[github client id]
+CLIENT_SECRET=[github client secret]
+PROVIDER=github
+
+hal config security authn oauth2 edit \
+  --client-id $CLIENT_ID \
+  --client-secret $CLIENT_SECRET \
+  --provider $PROVIDER
+hal config security authn oauth2 enable
+```
+
+Then you have to override API and UI base address.
+```
+UI_IPADDR=[Public IP address for spin-deck]
+API_IPADDR=[Public IP address for spin-gate]
+UI_URL=http://[FQDN for $UI_IPADDR]
+API_URL=http://[FQDN for $API_IPADDR]
+
+hal config security ui edit --override-base-url $UI_URL
+hal config security api edit --override-base-url $API_URL
+hal deploy apply
+```
+
+Now you can expose your `spin-deck` and `spin-gate` service by `kubectl edit svc`.
